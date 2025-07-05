@@ -7,9 +7,18 @@ import traceback
 # --- 配置 ---
 app = Flask(__name__)
 CORS(app)
-NEO4J_URI = "neo4j+s://f34a0b4d.databases.neo4j.io"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "JTYvsLt2quxhGvdp5JHHK2uQjEaQDg-yS9JgyNDJKFY"
+
+# 【核心修改】从环境变量中读取Neo4j凭证
+# os.environ.get('KEY', 'default_value') 的意思是：尝试读取名为'KEY'的环境变量，如果不存在，就使用后面的默认值。
+# 在Zeabur上部署时，我们会设置这些环境变量，所以它会读取到。在本地运行时，如果没有设置，它会使用您写在代码里的默认值，不影响本地开发。
+NEO4J_URI = os.environ.get('NEO4J_URI', "neo4j+s://f34a0b4d.databases.neo4j.io")
+NEO4J_USER = os.environ.get('NEO4J_USER', "neo4j")
+NEO4J_PASSWORD = os.environ.get('NEO4J_PASSWORD', "JTYvsLt2quxhGvdp5JHHK2uQjEaQDg-yS9JgyNDJKFY")
+
+# 检查是否成功获取密码，如果没有设置环境变量且没有默认值，则抛出错误
+if not NEO4J_PASSWORD:
+    raise ValueError("NEO4J_PASSWORD not found in environment variables")
+
 driver = GraphDatabase.driver(NEO4J_URI, auth=basic_auth(NEO4J_USER, NEO4J_PASSWORD))
 
 # --- 数据转换核心 ---
