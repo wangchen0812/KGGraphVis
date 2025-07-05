@@ -1,0 +1,24 @@
+# IDEs and OS files
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Python backend specific
+backend/__pycache__/
+backend/*.pyc
+
+# Vue/Node frontend specific
+my-vue-graph-app/node_modules/
+my-vue-graph-app/dist/
+my-vue-graph-app/.env
+my-vue-graph-app/.env.*
+my-vue-graph-app/npm-debug.log*
+my-vue-graph-app/yarn-debug.log*
+my-vue-graph-app/yarn-error.log*
+my-vue-graph-app/pnpm-debug.log*
+
+# Logs
+logs
+*.log
