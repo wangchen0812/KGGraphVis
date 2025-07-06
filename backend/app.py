@@ -3,6 +3,7 @@ from flask_cors import CORS
 from neo4j import GraphDatabase, basic_auth
 from neo4j.graph import Node, Relationship, Path
 import traceback
+import os
 
 # --- 配置 ---
 app = Flask(__name__)
