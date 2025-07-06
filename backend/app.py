@@ -7,7 +7,11 @@ import os
 
 # --- 配置 ---
 app = Flask(__name__)
-CORS(app)
+# 【核心修正】为CORS配置添加根路径，并允许所有来源访问这个简单的健康检查点
+CORS(app, resources={
+    r"/graph": {"origins": "https://kg-graph-vis.vercel.app"},
+    r"/": {"origins": "*"}  # 允许任何人访问根路径
+})
 
 # 【核心修改】从环境变量中读取Neo4j凭证
 # os.environ.get('KEY', 'default_value') 的意思是：尝试读取名为'KEY'的环境变量，如果不存在，就使用后面的默认值。
@@ -58,6 +62,16 @@ def process_table_result(keys, records):
     headers = list(keys)
     rows = [dict(zip(headers, map(sanitize_value, record.values()))) for record in records]
     return {"headers": headers, "rows": rows}
+
+# --- 【核心修正】添加一个新的健康检查路由 ---
+@app.route('/', methods=['GET'])
+def health_check():
+    """
+    这是一个健康检查端点。
+    当访问根URL时，返回一个JSON表示服务正在运行。
+    """
+    return jsonify({"status": "ok", "message": "Knowledge Graph API is running."})
+
 
 # --- API 路由 ---
 @app.route('/graph', methods=['POST'])
